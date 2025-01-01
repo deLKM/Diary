@@ -9,17 +9,36 @@ struct NewDiaryEntryView: View {
     var body: some View {
         NavigationView {
             Form {
-                TextField("标题", text: $title)
-                TextEditor(text: $content)
-                    .frame(height: 200)
+                Section(header: Text("标题")) {
+                    TextField("请输入标题", text: $title)
+                        .font(.headline)
+                }
+                
+                Section(header: Text("内容")) {
+                    TextEditor(text: $content)
+                        .frame(minHeight: 200)
+                        .font(.body)
+                }
             }
             .navigationTitle("新日记")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                Button("保存") {
-                    diaryViewModel.addEntry(title: title, content: content)
-                    dismiss()
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("取消") {
+                        dismiss()
+                    }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("保存") {
+                        if !title.isEmpty {
+                            diaryViewModel.addEntry(title: title, content: content)
+                            dismiss()
+                        }
+                    }
+                    .disabled(title.isEmpty)
                 }
             }
         }
     }
-} 
+}

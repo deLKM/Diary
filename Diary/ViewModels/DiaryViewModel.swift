@@ -7,4 +7,8 @@ class DiaryViewModel: ObservableObject {
         let entry = DiaryEntry(title: title, content: content, date: Date())
         entries.append(entry)
     }
+    
+    func deleteEntry(at offsets: IndexSet) {
+        entries.remove(atOffsets: offsets)
+    }
 } 

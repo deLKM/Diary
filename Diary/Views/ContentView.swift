@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  Diary
-//
-//  Created by deLKM on 2025/1/1.
-//
-
 import SwiftUI
 
 struct ContentView: View {
@@ -13,13 +6,46 @@ struct ContentView: View {
     
     var body: some View {
         NavigationView {
-            List(diaryViewModel.entries) { entry in
-                DiaryEntryRow(entry: entry)
+            ZStack {
+                List {
+                    ForEach(diaryViewModel.entries) { entry in
+                        DiaryEntryRow(entry: entry)
+                            .background(Color(.systemBackground))
+                            .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
+                    }
+                    .onDelete(perform: diaryViewModel.deleteEntry)
+                }
+                .listStyle(InsetGroupedListStyle())
+                
+                if diaryViewModel.entries.isEmpty {
+                    VStack(spacing: 16) {
+                        Image(systemName: "note.text")
+                            .font(.system(size: 60))
+                            .foregroundColor(.gray)
+                        Text("还没有日记")
+                            .font(.headline)
+                            .foregroundColor(.gray)
+                        Button(action: { showingNewEntry = true }) {
+                            Text("开始写日记")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .padding()
+                                .background(Color.blue)
+                                .cornerRadius(10)
+                        }
+                    }
+                }
             }
             .navigationTitle("我的日记")
             .toolbar {
-                Button(action: { showingNewEntry = true }) {
-                    Image(systemName: "plus")
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: { showingNewEntry = true }) {
+                        Image(systemName: "square.and.pencil")
+                            .font(.system(size: 16, weight: .semibold))
+                    }
+                }
+                ToolbarItem(placement: .navigationBarLeading) {
+                    EditButton()
                 }
             }
             .sheet(isPresented: $showingNewEntry) {
